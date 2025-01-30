@@ -1,7 +1,3 @@
-
-Para modificar el texto debajo del título principal y hacerlo aparecer en dos cajas de texto alineadas simétricamente por el eje vertical, puedes usar columnas en Streamlit. Aquí está el código modificado:
-
-python
 import streamlit as st
 import plotly.express as px
 import requests
@@ -147,5 +143,3 @@ if st.button("Enviar"):
         st.success(f"Hola, {nombre}. Has elegido {opcion}.")
     else:
         st.warning("Por favor, ingresa tu nombre antes de continuar.")
-
-Este código usa st.columns para crear dos columnas, proporcionando un diseño simétrico para las dos partes del texto, cada una en su propia caja. He mantenido el estilo de centrado y justificación del texto dentro de cada caja para mantener la apariencia original del texto.
