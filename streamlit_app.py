@@ -57,9 +57,10 @@ apply_styles()
 # Añadir espacio para compensar la falta de cabecera
 st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
 
-# Título
-theme_icon = "🌙" if st.session_state['theme'] == 'dark' else "☀️"
-st.markdown(f"<h1 style='text-align: center;'>VENTAS ROHLEK FORECASTING {theme_icon}</h1>", unsafe_allow_html=True)
+# Título con más espacio hacia abajo
+st.markdown(f"""
+    <h1 style='text-align: center; margin-bottom: 30px;'>VENTAS ROHLEK FORECASTING {theme_icon}</h1>
+""", unsafe_allow_html=True)
 
 # Texto centrado y justificado debajo del título
 st.markdown("""
@@ -76,6 +77,8 @@ nombre = st.text_input("Ingresa tu nombre:")
 
 # Selector de opción
 opcion = st.selectbox("Elige una opción:", ["Datos Aleatorios", "Clima Actual", "Conversión de Moneda"])
+
+# ... (el resto de tu código sigue igual)
 
 if opcion == "Datos Aleatorios":
     df = px.data.iris()
