@@ -1,3 +1,7 @@
+
+Aquí tienes el código modificado con la nueva consideración de esconder la cabecera:
+
+python
 import streamlit as st
 import plotly.express as px
 import requests
@@ -40,6 +44,10 @@ def apply_styles():
             .stButton > button:hover {{
                 background-color: #005ECF;
             }}
+            /* Añadir este bloque para esconder la cabecera */
+            .css-1dp5vir {{
+                display: none;
+            }}
         </style>
         """,
         unsafe_allow_html=True
@@ -49,10 +57,12 @@ def apply_styles():
 init_session()
 apply_styles()
 
-# Título
+# Añadir espacio para compensar la falta de cabecera
+st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
+
 # Título
 theme_icon = "🌙" if st.session_state['theme'] == 'dark' else "☀️"
-st.markdown(f"<h1 style='text-align: center;'>VENTAS ROHLEK FORECASTING</h1>", unsafe_allow_html=True)
+st.markdown(f"<h1 style='text-align: center;'>VENTAS ROHLEK FORECASTING {theme_icon}</h1>", unsafe_allow_html=True)
 
 # Botón para cambiar tema
 st.button("Cambiar Tema", on_click=toggle_theme)
@@ -113,3 +123,5 @@ if st.button("Enviar"):
         st.success(f"Hola, {nombre}. Has elegido {opcion}.")
     else:
         st.warning("Por favor, ingresa tu nombre antes de continuar.")
+
+Este código incluye la modificación para esconder la cabecera de Streamlit y añade un margen superior para compensar visualmente su ausencia.
