@@ -65,6 +65,35 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
+# Añadir sonido al interactuar con los filtros
+st.markdown("""
+    <audio id="clickSound">
+        <source src="https://www.soundjay.com/buttons/button-3.mp3" type="audio/mpeg">
+        Tu navegador no soporta el elemento de audio.
+    </audio>
+    <script>
+        function playSound() {
+            var audio = document.getElementById("clickSound");
+            audio.play();
+        }
+        // Escuchar cambios en los filtros
+        document.addEventListener("DOMContentLoaded", function() {
+            var selectbox = document.querySelector(".stSelectbox select");
+            var multiselect = document.querySelector(".stMultiselect input");
+            if (selectbox) {
+                selectbox.addEventListener("change", function() {
+                    playSound();
+                });
+            }
+            if (multiselect) {
+                multiselect.addEventListener("change", function() {
+                    playSound();
+                });
+            }
+        });
+    </script>
+    """, unsafe_allow_html=True)
+
 # Título de la aplicación
 st.title("📊 Análisis de Ventas y Ciencia de Datos")
 
