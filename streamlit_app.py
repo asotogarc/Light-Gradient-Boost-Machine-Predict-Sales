@@ -59,7 +59,7 @@ st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
 
 # Título con más espacio hacia abajo
 st.markdown(f"""
-    <h1 style='text-align: center; margin-bottom: 30px;'>VENTAS ROHLEK FORECASTING {theme_icon}</h1>
+    <h1 style='text-align: center; margin-bottom: 30px;'>VENTAS ROHLEK FORECASTING</h1>
 """, unsafe_allow_html=True)
 
 # Texto centrado y justificado debajo del título
