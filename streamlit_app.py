@@ -65,7 +65,7 @@ st.markdown(f"""
 # Texto centrado y justificado debajo del título
 st.markdown("""
     <p style="text-align: center; text-align-last: justify;">
-        Esta aplicación muestra datos de las ventas de la compañía de Rohlek Forecasting subidos en el reto de Kaggle que se encuentra em el siguiente<a href="https://www.kaggle.com/c/rohlik-orders-forecasting-challenge" target="_blank"> enlace</a>. También se comparten datos del entrenamiento de un modelo predictivo de ventas de LightGBM; el notebook con la información se encuentra en este otro <a href="https://www.kaggle.com/code/angelsotogarca/rohlik-sales-forecasting/edit" target="_blank">enlace</a>.
+        Esta aplicación muestra datos de las ventas de la compañía de Rohlek Forecasting subidos en el reto de Kaggle que se encuentra em el siguiente<a href="https://www.kaggle.com/c/rohlik-orders-forecasting-challenge" target="_blank"> enlace</a>.También se comparten datos del entrenamiento de un modelo predictivo de ventas de LightGBM; el notebook con la información se encuentra en este otro <a href="https://www.kaggle.com/code/angelsotogarca/rohlik-sales-forecasting/edit" target="_blank">enlace</a>.
     </p>
 """, unsafe_allow_html=True)
 
