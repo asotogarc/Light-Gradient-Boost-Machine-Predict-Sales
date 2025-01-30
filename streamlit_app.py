@@ -1,4 +1,7 @@
 
+Para modificar el texto debajo del título principal y hacerlo aparecer en dos cajas de texto alineadas simétricamente por el eje vertical, puedes usar columnas en Streamlit. Aquí está el código modificado:
+
+python
 import streamlit as st
 import plotly.express as px
 import requests
@@ -62,12 +65,26 @@ st.markdown(f"""
     <h1 style='text-align: center; margin-bottom: 30px;'>VENTAS ROHLEK FORECASTING</h1>
 """, unsafe_allow_html=True)
 
-# Texto centrado y justificado debajo del título
-st.markdown("""
-    <p style="text-align: center; text-align-last: justify;">
-        Esta aplicación muestra datos de las ventas de la compañía de Rohlek Forecasting subidos en el reto de Kaggle que se encuentra em el siguiente<a href="https://www.kaggle.com/c/rohlik-orders-forecasting-challenge" target="_blank"> enlace</a>.También se comparten datos del entrenamiento de un modelo predictivo de ventas de LightGBM; el notebook con la información se encuentra en este otro <a href="https://www.kaggle.com/code/angelsotogarca/rohlik-sales-forecasting/edit" target="_blank">enlace</a>.
-    </p>
-""", unsafe_allow_html=True)
+# Crear columnas para las dos cajas de texto
+col1, col2 = st.columns(2)
+
+with col1:
+    st.markdown("""
+        <div style="text-align: center;">
+            <p style="text-align-last: justify;">
+                Esta aplicación muestra datos de las ventas de la compañía de Rohlek Forecasting subidos en el reto de Kaggle que se encuentra en el siguiente <a href="https://www.kaggle.com/c/rohlik-orders-forecasting-challenge" target="_blank">enlace</a>.
+            </p>
+        </div>
+    """, unsafe_allow_html=True)
+
+with col2:
+    st.markdown("""
+        <div style="text-align: center;">
+            <p style="text-align-last: justify;">
+                También se comparten datos del entrenamiento de un modelo predictivo de ventas de LightGBM; el notebook con la información se encuentra en este otro <a href="https://www.kaggle.com/code/angelsotogarca/rohlik-sales-forecasting/edit" target="_blank">enlace</a>.
+            </p>
+        </div>
+    """, unsafe_allow_html=True)
 
 # Botón para cambiar tema
 st.button("Cambiar Tema", on_click=toggle_theme)
@@ -130,3 +147,5 @@ if st.button("Enviar"):
         st.success(f"Hola, {nombre}. Has elegido {opcion}.")
     else:
         st.warning("Por favor, ingresa tu nombre antes de continuar.")
+
+Este código usa st.columns para crear dos columnas, proporcionando un diseño simétrico para las dos partes del texto, cada una en su propia caja. He mantenido el estilo de centrado y justificación del texto dentro de cada caja para mantener la apariencia original del texto.
