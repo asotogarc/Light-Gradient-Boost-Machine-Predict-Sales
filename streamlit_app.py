@@ -59,7 +59,7 @@ st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
 
 # Título
 theme_icon = "🌙" if st.session_state['theme'] == 'dark' else "☀️"
-st.markdown(f"<h1 style='text-align: center;'>VENTAS ROHLEK FORECASTING {theme_icon}</h1>", unsafe_allow_html=True)
+st.markdown(f"<h1 style='text-align: center;'>VENTAS ROHLEK FORECASTING</h1>", unsafe_allow_html=True)
 
 # Botón para cambiar tema
 st.button("Cambiar Tema", on_click=toggle_theme)
