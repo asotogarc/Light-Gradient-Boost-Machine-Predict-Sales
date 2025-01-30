@@ -1,7 +1,4 @@
 
-Aquí tienes el código modificado con la nueva consideración de esconder la cabecera:
-
-python
 import streamlit as st
 import plotly.express as px
 import requests
