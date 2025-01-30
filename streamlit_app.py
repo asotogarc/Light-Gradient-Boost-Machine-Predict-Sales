@@ -65,7 +65,7 @@ st.markdown(f"""
 # Texto centrado y justificado debajo del título
 st.markdown("""
     <p style="text-align: center; text-align-last: justify;">
-        Aquí va tu texto justificado y centrado. Este es un ejemplo de cómo se vería el texto con estas propiedades de estilo aplicadas. Puedes cambiar este texto según tus necesidades.
+        Aquí va tu texto justificado y centrado. Este es un ejemplo de cómo se vería el texto con estas propiedades de estilo aplicadas. Puedes cambiar este texto según tus necesidades.Este es un <a href="https://www.kaggle.com/competitions/rohlik-sales-forecasting-challenge-v2" target="_blank">enlace</a>
     </p>
 """, unsafe_allow_html=True)
 
