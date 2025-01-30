@@ -120,5 +120,3 @@ if st.button("Enviar"):
         st.success(f"Hola, {nombre}. Has elegido {opcion}.")
     else:
         st.warning("Por favor, ingresa tu nombre antes de continuar.")
-
-Este código incluye la modificación para esconder la cabecera de Streamlit y añade un margen superior para compensar visualmente su ausencia.
