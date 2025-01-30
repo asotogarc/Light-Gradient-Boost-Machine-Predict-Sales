@@ -33,14 +33,36 @@ st.markdown(
         .stButton > button:hover {
             background-color: #005ECF;
         }
+        .stTextInput > div > div > input {
+            border-radius: 8px;
+            border: 1px solid #D1D1D6;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .stSelectbox > div > div {
+            border-radius: 8px;
+            border: 1px solid #D1D1D6;
+            padding: 10px;
+            font-size: 16px;
+        }
     </style>
     """,
     unsafe_allow_html=True
 )
 
-st.title("📱 App Estilo Apple")
+st.title("📱 Aplicación Estilo Apple")
 
-st.write("Esta es una aplicación simple con un diseño limpio y moderno inspirado en Apple.")
+st.write("Explora una interfaz moderna con contrastes y colores llamativos inspirados en el diseño de Apple.")
 
-if st.button("Presiona Aquí"):
-    st.success("¡Botón presionado!")
+# Entrada de texto
+nombre = st.text_input("Ingresa tu nombre:")
+
+# Selector de opción
+opcion = st.selectbox("Elige una opción:", ["Opción 1", "Opción 2", "Opción 3"])
+
+# Botón interactivo
+if st.button("Enviar"):
+    if nombre:
+        st.success(f"Hola, {nombre}. Elegiste {opcion}.")
+    else:
+        st.warning("Por favor, ingresa tu nombre antes de continuar.")
