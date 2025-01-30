@@ -1,3 +1,7 @@
+
+Aquí está el código completo modificado sin omisiones:
+
+python
 import streamlit as st
 import plotly.express as px
 import requests
@@ -66,7 +70,7 @@ col1, col2 = st.columns(2)
 
 with col1:
     st.markdown("""
-        <div style="text-align: center;">
+        <div style="text-align: center; margin-top: 20px; margin-bottom: 20px;">
             <p style="text-align-last: justify;">
                 Esta aplicación muestra datos de las ventas de la compañía de Rohlek Forecasting subidos en el reto de Kaggle que se encuentra en el siguiente <a href="https://www.kaggle.com/c/rohlik-orders-forecasting-challenge" target="_blank">enlace</a>.
             </p>
@@ -75,7 +79,7 @@ with col1:
 
 with col2:
     st.markdown("""
-        <div style="text-align: center;">
+        <div style="text-align: center; margin-top: 20px; margin-bottom: 20px;">
             <p style="text-align-last: justify;">
                 También se comparten datos del entrenamiento de un modelo predictivo de ventas de LightGBM; el notebook con la información se encuentra en este otro <a href="https://www.kaggle.com/code/angelsotogarca/rohlik-sales-forecasting/edit" target="_blank">enlace</a>.
             </p>
