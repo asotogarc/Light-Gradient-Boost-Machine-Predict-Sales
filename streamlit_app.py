@@ -55,9 +55,16 @@ st.plotly_chart(fig_torta, use_container_width=True)
 st.subheader("Estadísticas Descriptivas")
 st.write(filtered_data['Ventas'].describe())
 
-# Heatmap de correlación (ejemplo con datos numéricos)
+# Heatmap de correlación (solo para columnas numéricas)
 st.subheader("Heatmap de Correlación")
-corr = data.corr()
+
+# Seleccionar solo las columnas numéricas
+numeric_data = data.select_dtypes(include=[np.number])
+
+# Calcular la matriz de correlación
+corr = numeric_data.corr()
+
+# Crear el heatmap
 fig_heatmap = go.Figure(data=go.Heatmap(
     z=corr.values,
     x=corr.columns,
@@ -65,7 +72,6 @@ fig_heatmap = go.Figure(data=go.Heatmap(
     colorscale='Viridis'
 ))
 st.plotly_chart(fig_heatmap, use_container_width=True)
-
 # Notas finales
 st.markdown("---")
 st.markdown("**Nota:** Esta aplicación es un ejemplo básico para mostrar estadísticas de ventas y análisis de datos utilizando Streamlit.")
