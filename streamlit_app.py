@@ -1,7 +1,6 @@
 import streamlit as st
 import plotly.express as px
 import requests
-import json
 
 # Inicializar sesión
 def init_session():
@@ -10,9 +9,11 @@ def init_session():
     if 'weather_history' not in st.session_state:
         st.session_state['weather_history'] = []
 
+# Cambiar tema
 def toggle_theme():
     st.session_state['theme'] = 'light' if st.session_state['theme'] == 'dark' else 'dark'
 
+# Convertir temperatura
 def convert_temperature(temp_celsius, unit):
     if unit == "Fahrenheit":
         return temp_celsius * 9/5 + 32
@@ -40,7 +41,7 @@ def apply_styles():
             .stButton > button:hover {{
                 background-color: #005ECF;
             }}
-            /* Añadir este bloque para esconder la cabecera */
+            /* Ocultar la cabecera */
             .css-1dp5vir {{
                 display: none;
             }}
@@ -49,14 +50,14 @@ def apply_styles():
         unsafe_allow_html=True
     )
 
-# Inicializar sesión
+# Inicializar sesión y aplicar estilos
 init_session()
 apply_styles()
 
 # Añadir espacio para compensar la falta de cabecera
 st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
 
-# Título con más espacio hacia abajo
+# Título de la aplicación
 st.markdown(f"""
     <h1 style='text-align: center; margin-bottom: 30px;'>VENTAS ROHLEK FORECASTING</h1>
 """, unsafe_allow_html=True)
@@ -89,15 +90,15 @@ st.button("Cambiar Tema", on_click=toggle_theme)
 nombre = st.text_input("Ingresa tu nombre:")
 
 # Selector de opción
-opcion = st.selectbox("Elige una opción:", ["Datos Aleatorios", "Clima Actual", "Conversión de Moneda"])
+opcion = st.selectbox("Elige una opción:", ["Datos Aleatorios", "Clima Actual"])
 
-# ... (el resto de tu código sigue igual)
-
+# Opción 1: Datos Aleatorios
 if opcion == "Datos Aleatorios":
     df = px.data.iris()
     fig = px.scatter(df, x="sepal_width", y="sepal_length", color="species", title="Gráfico Interactivo de Iris")
     st.plotly_chart(fig)
 
+# Opción 2: Clima Actual
 elif opcion == "Clima Actual":
     ciudad = st.text_input("Ingresa una ciudad para ver el clima:")
     unidad = st.selectbox("Elige la unidad de temperatura:", ["Celsius", "Fahrenheit", "Kelvin"])
@@ -110,8 +111,10 @@ elif opcion == "Clima Actual":
                 temp_converted = convert_temperature(temp_c, unidad)
                 st.success(f"La temperatura en {ciudad} es {temp_converted:.2f}° {unidad}")
                 
+                # Guardar en el historial
                 st.session_state['weather_history'].append(f"{ciudad}: {temp_converted:.2f}° {unidad}")
                 
+                # Mostrar gráfico de temperatura
                 fig = px.bar(x=[ciudad], y=[temp_converted], labels={'x': 'Ciudad', 'y': f'Temperatura ({unidad})'}, title="Temperatura Actual")
                 st.plotly_chart(fig)
             else:
@@ -123,19 +126,6 @@ elif opcion == "Clima Actual":
     if st.session_state['weather_history']:
         st.subheader("Historial de Consultas")
         st.write(st.session_state['weather_history'])
-
-elif opcion == "Conversión de Moneda":
-    base_currency = st.selectbox("Moneda base:", ["USD", "EUR", "GBP", "JPY"])
-    target_currency = st.selectbox("Moneda objetivo:", ["USD", "EUR", "GBP", "JPY"])
-    amount = st.number_input("Cantidad a convertir:", min_value=1.0, step=1.0)
-    if st.button("Convertir"):
-        api_url = f"https://api.exchangerate-api.com/v4/latest/{base_currency}"
-        response = requests.get(api_url).json()
-        if target_currency in response["rates"]:
-            converted_amount = amount * response["rates"][target_currency]
-            st.success(f"{amount} {base_currency} equivale a {converted_amount:.2f} {target_currency}")
-        else:
-            st.error("Error en la conversión")
 
 # Mensaje final
 if st.button("Enviar"):
