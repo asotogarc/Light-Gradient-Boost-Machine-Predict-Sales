@@ -1,7 +1,3 @@
-
-Aquí está el código completo modificado sin omisiones:
-
-python
 import streamlit as st
 import plotly.express as px
 import requests
