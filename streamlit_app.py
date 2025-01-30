@@ -1,24 +1,25 @@
 import streamlit as st
 
-# Estilos CSS personalizados con un diseño inspirado en Apple
+# Estilos CSS personalizados con un diseño inspirado en Apple y fondo oscuro
 st.markdown(
     """
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-            background-color: #F5F5F7;
+            background-color: #121212;  /* Fondo oscuro */
+            color: #FFFFFF;  /* Texto claro */
         }
         .stApp {
             max-width: 800px;
             margin: auto;
             padding: 2rem;
             border-radius: 12px;
-            background: white;
+            background: #1E1E1E;  /* Fondo oscuro para el contenedor principal */
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
         h1 {
             font-weight: 600;
-            color: #1D1D1F;
+            color: #FFFFFF;  /* Texto claro para títulos */
             text-align: center;
         }
         .stButton > button {
@@ -35,15 +36,19 @@ st.markdown(
         }
         .stTextInput > div > div > input {
             border-radius: 8px;
-            border: 1px solid #D1D1D6;
+            border: 1px solid #333333;  /* Borde más oscuro */
             padding: 10px;
             font-size: 16px;
+            background-color: #333333;  /* Fondo oscuro para inputs */
+            color: #FFFFFF;  /* Texto claro para inputs */
         }
         .stSelectbox > div > div {
             border-radius: 8px;
-            border: 1px solid #D1D1D6;
+            border: 1px solid #333333;  /* Borde más oscuro */
             padding: 10px;
             font-size: 16px;
+            background-color: #333333;  /* Fondo oscuro para selectores */
+            color: #FFFFFF;  /* Texto claro para selectores */
         }
     </style>
     """,
