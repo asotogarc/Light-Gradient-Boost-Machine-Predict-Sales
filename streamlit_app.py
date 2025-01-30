@@ -50,8 +50,9 @@ init_session()
 apply_styles()
 
 # Título
+# Título
 theme_icon = "🌙" if st.session_state['theme'] == 'dark' else "☀️"
-st.title(f"📱 Aplicación Mejorada {theme_icon}")
+st.markdown(f"<h1 style='text-align: center;'>Ventas Rohlik Forecasting {theme_icon}</h1>", unsafe_allow_html=True)
 
 # Botón para cambiar tema
 st.button("Cambiar Tema", on_click=toggle_theme)
