@@ -4,62 +4,34 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 
-# Inicializar sesión
-def init_session():
-    if 'theme' not in st.session_state:
-        st.session_state['theme'] = 'dark'
-    if 'selected_data' not in st.session_state:
-        st.session_state['selected_data'] = None
+# Inicializar tema
+if 'theme' not in st.session_state:
+    st.session_state['theme'] = 'dark'
 
-# Cambiar tema
-def toggle_theme():
-    st.session_state['theme'] = 'light' if st.session_state['theme'] == 'dark' else 'dark'
-
-# Aplicar estilos CSS personalizados
-def apply_styles():
-    st.markdown(
-        f"""
-        <style>
-            body {{
-                background-color: {'#1e1e1e' if st.session_state['theme'] == 'dark' else '#f5f5f5'};
-                color: {'#ffffff' if st.session_state['theme'] == 'dark' else '#000000'};
-                font-family: 'Arial', sans-serif;
-            }}
-            .stButton > button {{
-                background-color: #007AFF;
-                color: white;
-                border-radius: 12px;
-                padding: 12px 24px;
-                font-size: 16px;
-                transition: all 0.3s ease;
-                border: none;
-                box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            }}
-            .stButton > button:hover {{
-                background-color: #005ECF;
-                transform: translateY(-2px);
-                box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.15);
-            }}
-            .custom-card {{
-                background-color: {'#2d2d2d' if st.session_state['theme'] == 'dark' else '#ffffff'};
-                border-radius: 15px;
-                padding: 20px;
-                margin: 10px 0;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            }}
-            .metric-value {{
-                font-size: 24px;
-                font-weight: bold;
-                color: #007AFF;
-            }}
-            .metric-label {{
-                font-size: 14px;
-                color: {'#ffffff' if st.session_state['theme'] == 'dark' else '#666666'};
-            }}
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
+# Aplicar estilos CSS
+st.markdown(
+    """
+    <style>
+        .custom-card {
+            background-color: #2d2d2d;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 10px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .metric-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007AFF;
+        }
+        .metric-label {
+            font-size: 14px;
+            color: #ffffff;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 # Generar datos de ejemplo para ventas
 def generate_sales_data():
@@ -79,24 +51,17 @@ def generate_model_metrics():
         'R2': round(np.random.uniform(0.7, 0.95), 3)
     }
 
-# Inicializar sesión y aplicar estilos
-init_session()
-apply_styles()
-
 # Título principal
 st.markdown("""
     <h1 style='text-align: center; margin-bottom: 30px;'>
-        🌟 ROHLEK FORECASTING DASHBOARD 🌟
+        📊 Dashboard de Ventas y Predicciones 📈
     </h1>
 """, unsafe_allow_html=True)
 
-# Botón para cambiar tema
-st.button("🌓 Cambiar Tema", on_click=toggle_theme)
-
 # Selector de opción principal
 opcion = st.selectbox(
-    "📊 Selecciona el tipo de análisis:",
-    ["Datos de Ventas", "Modelo Predictivo", "Selección de Ciudad"]
+    "Selecciona el tipo de análisis:",
+    ["Datos de Ventas", "Modelo Predictivo"]
 )
 
 if opcion == "Datos de Ventas":
@@ -138,11 +103,11 @@ if opcion == "Datos de Ventas":
     fig_ventas.update_layout(
         plot_bgcolor='rgba(0,0,0,0)',
         paper_bgcolor='rgba(0,0,0,0)',
-        font=dict(color='white' if st.session_state['theme'] == 'dark' else 'black')
+        font=dict(color='white')
     )
     st.plotly_chart(fig_ventas, use_container_width=True)
 
-elif opcion == "Modelo Predictivo":
+else:  # Modelo Predictivo
     st.markdown("## 🤖 Métricas del Modelo")
     
     # Métricas del modelo
@@ -173,7 +138,7 @@ elif opcion == "Modelo Predictivo":
             </div>
         """.format(metricas['R2']), unsafe_allow_html=True)
     
-    # Información adicional del modelo
+    # Información del modelo
     st.markdown("""
         ### 📝 Detalles del Modelo
         - **Tipo de Modelo**: LightGBM
@@ -181,56 +146,11 @@ elif opcion == "Modelo Predictivo":
         - **Periodo de entrenamiento**: 6 meses
         - **Frecuencia de actualización**: Diaria
     """)
-    
-    # Enlace al notebook
-    st.markdown("""
-        ### 🔗 Recursos Adicionales
-        - [Ver notebook completo en Kaggle](https://www.kaggle.com/code/angelsotogarca/rohlik-sales-forecasting/edit)
-        - [Dataset original](https://www.kaggle.com/c/rohlik-orders-forecasting-challenge)
-    """)
-
-elif opcion == "Selección de Ciudad":
-    st.markdown("## 🌍 Selección de Ciudad")
-    
-    # Datos de ejemplo de ciudades
-    ciudades = pd.DataFrame({
-        'Ciudad': ['Madrid', 'Barcelona', 'Valencia', 'Sevilla', 'Zaragoza'],
-        'Latitud': [40.4168, 41.3851, 39.4699, 37.3891, 41.6488],
-        'Longitud': [-3.7038, 2.1734, -0.3763, -5.9845, -0.8891]
-    })
-    
-    # Mapa interactivo
-    fig = px.scatter_geo(ciudades, 
-                         lat='Latitud', 
-                         lon='Longitud', 
-                         hover_name='Ciudad', 
-                         projection="natural earth",
-                         title="Selecciona una ciudad en el mapa")
-    
-    fig.update_layout(
-        geo=dict(
-            bgcolor='rgba(0,0,0,0)',
-            landcolor="lightgreen",
-            oceancolor="lightblue",
-            showland=True,
-            showocean=True,
-            lakecolor="blue"
-        ),
-        plot_bgcolor='rgba(0,0,0,0)',
-        paper_bgcolor='rgba(0,0,0,0)',
-        font=dict(color='white' if st.session_state['theme'] == 'dark' else 'black')
-    )
-    
-    st.plotly_chart(fig, use_container_width=True)
-    
-    # Selección de ciudad
-    ciudad_seleccionada = st.selectbox("Selecciona una ciudad:", ciudades['Ciudad'])
-    st.write(f"Has seleccionado: {ciudad_seleccionada}")
 
 # Pie de página
 st.markdown("""
     ---
     <p style='text-align: center; color: gray;'>
-        Desarrollado para Rohlek Forecasting © 2024
+        Dashboard de Ventas © 2024
     </p>
 """, unsafe_allow_html=True)
