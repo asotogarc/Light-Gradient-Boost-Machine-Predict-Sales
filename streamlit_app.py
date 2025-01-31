@@ -148,80 +148,101 @@ if opcion == "Datos de Ventas":
         """.format(df_ventas['Ventas'].max()), unsafe_allow_html=True)
     
     # Gráfico de ventas
-    fig_ventas = px.line(df_ventas, x='Fecha', y='Ventas', color='Ciudad',
-                        title='Evolución de Ventas por Ciudad',
-                        labels={'value': 'Euros', 'variable': 'Ciudad'})
-    fig_ventas.update_layout(
-        plot_bgcolor='#2A3132',
-        paper_bgcolor='#2A3132',
-        font=dict(color='white'),
-        title_font_color='#90AFC5',
-        legend_title_font_color='#90AFC5',
-        legend_font_color='white'
-    )
-    st.plotly_chart(fig_ventas, use_container_width=True)
+    st.markdown("## 📊 Gráficos de Ventas")
+    col1, col2 = st.columns(2)
+    with col1:
+        fig_ventas = px.line(df_ventas, x='Fecha', y='Ventas', color='Ciudad',
+                             title='Evolución de Ventas por Ciudad',
+                             labels={'value': 'Euros', 'variable': 'Ciudad'})
+        fig_ventas.update_layout(
+            plot_bgcolor='#2A3132',
+            paper_bgcolor='#2A3132',
+            font=dict(color='white'),
+            title_font_color='#90AFC5',
+            legend_title_font_color='#90AFC5',
+            legend_font_color='white'
+        )
+        st.plotly_chart(fig_ventas, use_container_width=True)
     
-    # Media de productos vendidos
-    st.markdown("## 🍞 Media de Productos Vendidos")
-    df_media_productos = df_productos.groupby('Producto')['Ventas'].mean().reset_index()
-    fig_media_productos = px.bar(df_media_productos, x='Producto', y='Ventas',
-                                 title='Media de Ventas por Producto',
-                                 labels={'Ventas': 'Media de Ventas', 'Producto': 'Producto'})
-    fig_media_productos.update_layout(
-        plot_bgcolor='#2A3132',
-        paper_bgcolor='#2A3132',
-        font=dict(color='white'),
-        title_font_color='#90AFC5',
-        legend_title_font_color='#90AFC5',
-        legend_font_color='white'
-    )
-    st.plotly_chart(fig_media_productos, use_container_width=True)
+    with col2:
+        fig_pred_vs_real = px.line(df_ventas, x='Fecha', y=['Ventas', 'Predicción'],
+                                   title='Ventas vs Predicción',
+                                   labels={'value': 'Euros', 'variable': 'Tipo'})
+        fig_pred_vs_real.update_layout(
+            plot_bgcolor='#2A3132',
+            paper_bgcolor='#2A3132',
+            font=dict(color='white'),
+            title_font_color='#90AFC5',
+            legend_title_font_color='#90AFC5',
+            legend_font_color='white'
+        )
+        st.plotly_chart(fig_pred_vs_real, use_container_width=True)
+    
+    # Media de productos vendidos y disponibilidad
+    st.markdown("## 📦 Productos y Disponibilidad")
+    col1, col2 = st.columns(2)
+    with col1:
+        df_media_productos = df_productos.groupby('Producto')['Ventas'].mean().reset_index()
+        fig_media_productos = px.bar(df_media_productos, x='Producto', y='Ventas',
+                                     title='Media de Ventas por Producto',
+                                     labels={'Ventas': 'Media de Ventas', 'Producto': 'Producto'})
+        fig_media_productos.update_layout(
+            plot_bgcolor='#2A3132',
+            paper_bgcolor='#2A3132',
+            font=dict(color='white'),
+            title_font_color='#90AFC5',
+            legend_title_font_color='#90AFC5',
+            legend_font_color='white'
+        )
+        st.plotly_chart(fig_media_productos, use_container_width=True)
+    
+    with col2:
+        df_media_disponibilidad = df_productos.groupby('Ciudad')['Disponibilidad'].mean().reset_index()
+        fig_media_disponibilidad = px.bar(df_media_disponibilidad, x='Ciudad', y='Disponibilidad',
+                                          title='Media de Disponibilidad por Ciudad',
+                                          labels={'Disponibilidad': 'Media de Disponibilidad', 'Ciudad': 'Ciudad'})
+        fig_media_disponibilidad.update_layout(
+            plot_bgcolor='#2A3132',
+            paper_bgcolor='#2A3132',
+            font=dict(color='white'),
+            title_font_color='#90AFC5',
+            legend_title_font_color='#90AFC5',
+            legend_font_color='white'
+        )
+        st.plotly_chart(fig_media_disponibilidad, use_container_width=True)
     
     # Top 10 productos más y menos vendidos
-    st.markdown("## 📊 Top 10 Productos Más y Menos Vendidos")
-    df_top10 = df_productos.groupby('Producto')['Ventas'].sum().reset_index().sort_values(by='Ventas', ascending=False)
-    fig_top10 = px.bar(df_top10, x='Producto', y='Ventas',
-                       title='Top 10 Productos Más Vendidos',
-                       labels={'Ventas': 'Total de Ventas', 'Producto': 'Producto'})
-    fig_top10.update_layout(
-        plot_bgcolor='#2A3132',
-        paper_bgcolor='#2A3132',
-        font=dict(color='white'),
-        title_font_color='#90AFC5',
-        legend_title_font_color='#90AFC5',
-        legend_font_color='white'
-    )
-    st.plotly_chart(fig_top10, use_container_width=True)
+    st.markdown("## 🏆 Top 10 Productos Más y Menos Vendidos")
+    col1, col2 = st.columns(2)
+    with col1:
+        df_top10 = df_productos.groupby('Producto')['Ventas'].sum().reset_index().sort_values(by='Ventas', ascending=False)
+        fig_top10 = px.bar(df_top10, x='Producto', y='Ventas',
+                           title='Top 10 Productos Más Vendidos',
+                           labels={'Ventas': 'Total de Ventas', 'Producto': 'Producto'})
+        fig_top10.update_layout(
+            plot_bgcolor='#2A3132',
+            paper_bgcolor='#2A3132',
+            font=dict(color='white'),
+            title_font_color='#90AFC5',
+            legend_title_font_color='#90AFC5',
+            legend_font_color='white'
+        )
+        st.plotly_chart(fig_top10, use_container_width=True)
     
-    df_least10 = df_productos.groupby('Producto')['Ventas'].sum().reset_index().sort_values(by='Ventas', ascending=True)
-    fig_least10 = px.bar(df_least10, x='Producto', y='Ventas',
-                         title='Top 10 Productos Menos Vendidos',
-                         labels={'Ventas': 'Total de Ventas', 'Producto': 'Producto'})
-    fig_least10.update_layout(
-        plot_bgcolor='#2A3132',
-        paper_bgcolor='#2A3132',
-        font=dict(color='white'),
-        title_font_color='#90AFC5',
-        legend_title_font_color='#90AFC5',
-        legend_font_color='white'
-    )
-    st.plotly_chart(fig_least10, use_container_width=True)
-    
-    # Media de disponibilidad
-    st.markdown("## 📦 Media de Disponibilidad")
-    df_media_disponibilidad = df_productos.groupby('Ciudad')['Disponibilidad'].mean().reset_index()
-    fig_media_disponibilidad = px.bar(df_media_disponibilidad, x='Ciudad', y='Disponibilidad',
-                                      title='Media de Disponibilidad por Ciudad',
-                                      labels={'Disponibilidad': 'Media de Disponibilidad', 'Ciudad': 'Ciudad'})
-    fig_media_disponibilidad.update_layout(
-        plot_bgcolor='#2A3132',
-        paper_bgcolor='#2A3132',
-        font=dict(color='white'),
-        title_font_color='#90AFC5',
-        legend_title_font_color='#90AFC5',
-        legend_font_color='white'
-    )
-    st.plotly_chart(fig_media_disponibilidad, use_container_width=True)
+    with col2:
+        df_least10 = df_productos.groupby('Producto')['Ventas'].sum().reset_index().sort_values(by='Ventas', ascending=True)
+        fig_least10 = px.bar(df_least10, x='Producto', y='Ventas',
+                             title='Top 10 Productos Menos Vendidos',
+                             labels={'Ventas': 'Total de Ventas', 'Producto': 'Producto'})
+        fig_least10.update_layout(
+            plot_bgcolor='#2A3132',
+            paper_bgcolor='#2A3132',
+            font=dict(color='white'),
+            title_font_color='#90AFC5',
+            legend_title_font_color='#90AFC5',
+            legend_font_color='white'
+        )
+        st.plotly_chart(fig_least10, use_container_width=True)
 
 else:  # Modelo Predictivo
     st.markdown("## 🤖 Métricas del Modelo")
