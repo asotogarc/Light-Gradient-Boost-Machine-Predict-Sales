@@ -96,7 +96,7 @@ st.button("🌓 Cambiar Tema", on_click=toggle_theme)
 # Selector de opción principal
 opcion = st.selectbox(
     "📊 Selecciona el tipo de análisis:",
-    ["Datos de Ventas", "Modelo Predictivo"]
+    ["Datos de Ventas", "Modelo Predictivo", "Selección de Ciudad"]
 )
 
 if opcion == "Datos de Ventas":
@@ -188,6 +188,44 @@ elif opcion == "Modelo Predictivo":
         - [Ver notebook completo en Kaggle](https://www.kaggle.com/code/angelsotogarca/rohlik-sales-forecasting/edit)
         - [Dataset original](https://www.kaggle.com/c/rohlik-orders-forecasting-challenge)
     """)
+
+elif opcion == "Selección de Ciudad":
+    st.markdown("## 🌍 Selección de Ciudad")
+    
+    # Datos de ejemplo de ciudades
+    ciudades = pd.DataFrame({
+        'Ciudad': ['Madrid', 'Barcelona', 'Valencia', 'Sevilla', 'Zaragoza'],
+        'Latitud': [40.4168, 41.3851, 39.4699, 37.3891, 41.6488],
+        'Longitud': [-3.7038, 2.1734, -0.3763, -5.9845, -0.8891]
+    })
+    
+    # Mapa interactivo
+    fig = px.scatter_geo(ciudades, 
+                         lat='Latitud', 
+                         lon='Longitud', 
+                         hover_name='Ciudad', 
+                         projection="natural earth",
+                         title="Selecciona una ciudad en el mapa")
+    
+    fig.update_layout(
+        geo=dict(
+            bgcolor='rgba(0,0,0,0)',
+            landcolor="lightgreen",
+            oceancolor="lightblue",
+            showland=True,
+            showocean=True,
+            lakecolor="blue"
+        ),
+        plot_bgcolor='rgba(0,0,0,0)',
+        paper_bgcolor='rgba(0,0,0,0)',
+        font=dict(color='white' if st.session_state['theme'] == 'dark' else 'black')
+    )
+    
+    st.plotly_chart(fig, use_container_width=True)
+    
+    # Selección de ciudad
+    ciudad_seleccionada = st.selectbox("Selecciona una ciudad:", ciudades['Ciudad'])
+    st.write(f"Has seleccionado: {ciudad_seleccionada}")
 
 # Pie de página
 st.markdown("""
