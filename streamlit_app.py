@@ -88,10 +88,6 @@ opcion = st.selectbox(
     ["Datos de Ventas", "Modelo Predictivo"]
 )
 
-# Efecto de nieve al seleccionar "Datos de Ventas"
-if opcion == "Datos de Ventas":
-    st.snow()  # ¡Celebra con nieve!
-
 if opcion == "Datos de Ventas":
     st.markdown("## 📈 Análisis de Ventas")
     
@@ -100,7 +96,7 @@ if opcion == "Datos de Ventas":
         st.write("Cargando datos históricos...")
         df_ventas = generate_sales_data()
         st.write("Procesando predicciones...")
-        st.toast("¡Datos generados con éxito!", icon="🎉")
+        st.toast("¡Datos generados con éxito!", icon="✅")
         status.update(label="Datos listos", state="complete")
     
     # Métricas de ventas
@@ -151,7 +147,7 @@ else:  # Modelo Predictivo
         st.write("Cargando datos del modelo...")
         metricas = generate_model_metrics()
         st.write("Procesando métricas...")
-        st.toast("¡Métricas calculadas con éxito!", icon="🎉")
+        st.toast("¡Métricas calculadas con éxito!", icon="✅")
         status.update(label="Métricas listas", state="complete")
     
     # Métricas del modelo
@@ -188,9 +184,6 @@ else:  # Modelo Predictivo
         - **Periodo de entrenamiento**: 6 meses
         - **Frecuencia de actualización**: Diaria
     """)
-
-    # Efecto de globos al seleccionar "Modelo Predictivo"
-    st.balloons()  # ¡Celebra con globos!
 
 # Pie de página
 st.markdown("""
