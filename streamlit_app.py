@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 
-# Forzar el tema oscuro en Streamlit
+# Configuración de la página
 st.set_page_config(
     page_title="Dashboard de Ventas",
     page_icon="📊",
@@ -95,8 +95,13 @@ if opcion == "Datos de Ventas":
 if opcion == "Datos de Ventas":
     st.markdown("## 📈 Análisis de Ventas")
     
-    # Generar datos de ventas
-    df_ventas = generate_sales_data()
+    # Barra de progreso para simular carga de datos
+    with st.status("Generando datos de ventas...", expanded=True) as status:
+        st.write("Cargando datos históricos...")
+        df_ventas = generate_sales_data()
+        st.write("Procesando predicciones...")
+        st.toast("¡Datos generados con éxito!", icon="🎉")
+        status.update(label="Datos listos", state="complete")
     
     # Métricas de ventas
     col1, col2, col3 = st.columns(3)
@@ -141,10 +146,16 @@ if opcion == "Datos de Ventas":
 else:  # Modelo Predictivo
     st.markdown("## 🤖 Métricas del Modelo")
     
-    # Métricas del modelo
-    metricas = generate_model_metrics()
-    col1, col2, col3 = st.columns(3)
+    # Barra de progreso para simular carga de métricas
+    with st.status("Calculando métricas del modelo...", expanded=True) as status:
+        st.write("Cargando datos del modelo...")
+        metricas = generate_model_metrics()
+        st.write("Procesando métricas...")
+        st.toast("¡Métricas calculadas con éxito!", icon="🎉")
+        status.update(label="Métricas listas", state="complete")
     
+    # Métricas del modelo
+    col1, col2, col3 = st.columns(3)
     with col1:
         st.markdown("""
             <div class='custom-card'>
