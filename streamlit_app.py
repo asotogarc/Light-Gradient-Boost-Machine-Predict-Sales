@@ -13,7 +13,7 @@ st.markdown(
     """
     <style>
         .custom-card {
-            background-color: #2d2d2d;
+            background-color: #2A3132;
             border-radius: 15px;
             padding: 20px;
             margin: 10px 0;
@@ -22,11 +22,18 @@ st.markdown(
         .metric-value {
             font-size: 24px;
             font-weight: bold;
-            color: #007AFF;
+            color: #90AFC5;
         }
         .metric-label {
             font-size: 14px;
             color: #ffffff;
+        }
+        .stSelectbox > div > div > div > div {
+            background-color: #336B87;
+            color: #ffffff;
+        }
+        .stSelectbox > div > div > div > div:hover {
+            background-color: #763626;
         }
     </style>
     """,
@@ -53,7 +60,7 @@ def generate_model_metrics():
 
 # Título principal
 st.markdown("""
-    <h1 style='text-align: center; margin-bottom: 30px;'>
+    <h1 style='text-align: center; margin-bottom: 30px; color: #90AFC5;'>
         Dashboard de Ventas y Predicciones
     </h1>
 """, unsafe_allow_html=True)
@@ -101,9 +108,12 @@ if opcion == "Datos de Ventas":
                         title='Ventas vs Predicción',
                         labels={'value': 'Euros', 'variable': 'Tipo'})
     fig_ventas.update_layout(
-        plot_bgcolor='rgba(0,0,0,0)',
-        paper_bgcolor='rgba(0,0,0,0)',
-        font=dict(color='white')
+        plot_bgcolor='#2A3132',
+        paper_bgcolor='#2A3132',
+        font=dict(color='white'),
+        title_font_color='#90AFC5',
+        legend_title_font_color='#90AFC5',
+        legend_font_color='white'
     )
     st.plotly_chart(fig_ventas, use_container_width=True)
 
@@ -150,7 +160,7 @@ else:  # Modelo Predictivo
 # Pie de página
 st.markdown("""
     ---
-    <p style='text-align: center; color: gray;'>
+    <p style='text-align: center; color: #763626;'>
         Dashboard de Ventas © 2024
     </p>
 """, unsafe_allow_html=True)
