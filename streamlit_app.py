@@ -88,6 +88,10 @@ opcion = st.selectbox(
     ["Datos de Ventas", "Modelo Predictivo"]
 )
 
+# Efecto de nieve al seleccionar "Datos de Ventas"
+if opcion == "Datos de Ventas":
+    st.snow()  # ¡Celebra con nieve!
+
 if opcion == "Datos de Ventas":
     st.markdown("## 📈 Análisis de Ventas")
     
@@ -173,6 +177,9 @@ else:  # Modelo Predictivo
         - **Periodo de entrenamiento**: 6 meses
         - **Frecuencia de actualización**: Diaria
     """)
+
+    # Efecto de globos al seleccionar "Modelo Predictivo"
+    st.balloons()  # ¡Celebra con globos!
 
 # Pie de página
 st.markdown("""
