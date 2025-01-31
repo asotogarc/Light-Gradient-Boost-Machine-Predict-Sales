@@ -4,16 +4,25 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 
-# Inicializar tema
-if 'theme' not in st.session_state:
-    st.session_state['theme'] = 'dark'
+# Forzar el tema oscuro en Streamlit
+st.set_page_config(
+    page_title="Dashboard de Ventas",
+    page_icon="📊",
+    layout="centered",
+    initial_sidebar_state="auto",
+)
 
-# Aplicar estilos CSS
+# Aplicar estilos CSS personalizados
 st.markdown(
     """
     <style>
-        .custom-card {
+        /* Fondo general de la aplicación */
+        .stApp {
             background-color: #2A3132;
+        }
+        /* Tarjetas personalizadas */
+        .custom-card {
+            background-color: #336B87;
             border-radius: 15px;
             padding: 20px;
             margin: 10px 0;
@@ -28,12 +37,20 @@ st.markdown(
             font-size: 14px;
             color: #ffffff;
         }
+        /* Selector de opciones */
         .stSelectbox > div > div > div > div {
             background-color: #336B87;
             color: #ffffff;
         }
         .stSelectbox > div > div > div > div:hover {
             background-color: #763626;
+        }
+        /* Títulos y textos */
+        h1, h2, h3, h4, h5, h6 {
+            color: #90AFC5 !important;
+        }
+        p, div {
+            color: #ffffff !important;
         }
     </style>
     """,
