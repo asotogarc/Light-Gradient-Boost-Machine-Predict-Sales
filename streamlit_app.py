@@ -101,164 +101,169 @@ st.markdown("""
     </h1>
 """, unsafe_allow_html=True)
 
-# Formulario de selección de ciudades y fechas
+# Inicializar variables de sesión si no existen
+if 'selected_cities' not in st.session_state:
+    st.session_state.selected_cities = list(CITIES_DATA.keys())
+
+# Formulario de selección
 with st.form("selection_form"):
     col1, col2 = st.columns([2, 1])
     
     with col1:
-        st.write("### Selecciona las ciudades en el mapa")
-        # Mostrar el mapa con todas las ciudades
-        selected_points = st.map(cities_df, zoom=5)
+        st.write("### Selecciona las ciudades")
+        # Usar checkboxes para la selección de ciudades
+        selected_cities_temp = []
+        for city in CITIES_DATA.keys():
+            if st.checkbox(city, value=city in st.session_state.selected_cities):
+                selected_cities_temp.append(city)
         
-        # Procesar la selección del mapa
-        if selected_points is not None and len(selected_points) > 0:
-            selected_cities = [
-                cities_df.iloc[point['index']]['city']
-                for point in selected_points['selected_points']
-            ]
-        else:
-            selected_cities = list(CITIES_DATA.keys())
+        # Mostrar el mapa (solo visualización)
+        st.map(cities_df[cities_df['city'].isin(selected_cities_temp)], zoom=5)
     
     with col2:
         st.write("### Selecciona el rango de fechas")
         start_date = st.date_input("Fecha de inicio:", datetime(2024, 1, 1))
         end_date = st.date_input("Fecha de fin:", datetime(2024, 1, 31))
     
-    submit_button = st.form_submit_button("Actualizar Dashboard")
-
-if submit_button or 'initial_load' not in st.session_state:
-    st.session_state.initial_load = True
+    # Botón de submit
+    submitted = st.form_submit_button("Actualizar Dashboard")
     
-    # Generar datos
-    with st.status("Generando datos de ventas...", expanded=True) as status:
-        st.write("Cargando datos históricos...")
-        df_ventas = generate_sales_data(selected_cities, start_date, end_date)
-        df_productos = generate_product_data(selected_cities, start_date, end_date)
-        st.toast("¡Datos generados con éxito!", icon="✅")
-        status.update(label="Datos listos", state="complete")
+    if submitted:
+        st.session_state.selected_cities = selected_cities_temp if selected_cities_temp else list(CITIES_DATA.keys())
 
-    # Métricas de ventas
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.markdown(f"""
-            <div class='custom-card'>
-                <div class='metric-label'>Venta Total</div>
-                <div class='metric-value'>€{df_ventas['Ventas'].sum():,.2f}</div>
-            </div>
-        """, unsafe_allow_html=True)
+# Usar las ciudades seleccionadas para generar el dashboard
+selected_cities = st.session_state.selected_cities
 
-    with col2:
-        st.markdown(f"""
-            <div class='custom-card'>
-                <div class='metric-label'>Promedio Diario</div>
-                <div class='metric-value'>€{df_ventas['Ventas'].mean():,.2f}</div>
-            </div>
-        """, unsafe_allow_html=True)
+# Generar datos
+with st.status("Generando datos de ventas...", expanded=True) as status:
+    st.write("Cargando datos históricos...")
+    df_ventas = generate_sales_data(selected_cities, start_date, end_date)
+    df_productos = generate_product_data(selected_cities, start_date, end_date)
+    st.toast("¡Datos generados con éxito!", icon="✅")
+    status.update(label="Datos listos", state="complete")
 
-    with col3:
-        st.markdown(f"""
-            <div class='custom-card'>
-                <div class='metric-label'>Venta Máxima</div>
-                <div class='metric-value'>€{df_ventas['Ventas'].max():,.2f}</div>
-            </div>
-        """, unsafe_allow_html=True)
+# Métricas de ventas
+col1, col2, col3 = st.columns(3)
+with col1:
+    st.markdown(f"""
+        <div class='custom-card'>
+            <div class='metric-label'>Venta Total</div>
+            <div class='metric-value'>€{df_ventas['Ventas'].sum():,.2f}</div>
+        </div>
+    """, unsafe_allow_html=True)
 
-    # Gráfico de ventas
-    st.markdown("## 📊 Gráficos de Ventas")
-    fig_ventas = px.line(df_ventas, x='Fecha', y='Ventas', color='Ciudad',
-                         title='Evolución de Ventas por Ciudad',
-                         labels={'value': 'Euros', 'variable': 'Ciudad'})
-    fig_ventas.update_layout(
+with col2:
+    st.markdown(f"""
+        <div class='custom-card'>
+            <div class='metric-label'>Promedio Diario</div>
+            <div class='metric-value'>€{df_ventas['Ventas'].mean():,.2f}</div>
+        </div>
+    """, unsafe_allow_html=True)
+
+with col3:
+    st.markdown(f"""
+        <div class='custom-card'>
+            <div class='metric-label'>Venta Máxima</div>
+            <div class='metric-value'>€{df_ventas['Ventas'].max():,.2f}</div>
+        </div>
+    """, unsafe_allow_html=True)
+
+# Gráfico de ventas
+st.markdown("## 📊 Gráficos de Ventas")
+fig_ventas = px.line(df_ventas, x='Fecha', y='Ventas', color='Ciudad',
+                     title='Evolución de Ventas por Ciudad',
+                     labels={'value': 'Euros', 'variable': 'Ciudad'})
+fig_ventas.update_layout(
+    plot_bgcolor='#2A3132',
+    paper_bgcolor='#2A3132',
+    font=dict(color='white'),
+    title_font_color='#90AFC5',
+    legend_title_font_color='#90AFC5',
+    legend_font_color='white',
+    height=500
+)
+st.plotly_chart(fig_ventas, use_container_width=True)
+
+# Añadir espacio entre secciones
+st.markdown("<br><br>", unsafe_allow_html=True)
+
+# Media de productos vendidos y disponibilidad
+st.markdown("## 📦 Productos y Disponibilidad")
+col1, col2 = st.columns([1, 1])
+with col1:
+    df_media_productos = df_productos.groupby('Producto')['Ventas'].mean().reset_index()
+    fig_media_productos = px.bar(df_media_productos, x='Producto', y='Ventas',
+                                 title='Media de Ventas por Producto',
+                                 labels={'Ventas': 'Media de Ventas', 'Producto': 'Producto'})
+    fig_media_productos.update_layout(
         plot_bgcolor='#2A3132',
         paper_bgcolor='#2A3132',
         font=dict(color='white'),
         title_font_color='#90AFC5',
         legend_title_font_color='#90AFC5',
         legend_font_color='white',
-        height=500
+        height=400
     )
-    st.plotly_chart(fig_ventas, use_container_width=True)
+    st.plotly_chart(fig_media_productos, use_container_width=True)
 
-    # Añadir espacio entre secciones
-    st.markdown("<br><br>", unsafe_allow_html=True)
+with col2:
+    df_media_disponibilidad = df_productos.groupby('Ciudad')['Disponibilidad'].mean().reset_index()
+    fig_media_disponibilidad = px.bar(df_media_disponibilidad, x='Ciudad', y='Disponibilidad',
+                                      title='Media de Disponibilidad por Ciudad',
+                                      labels={'Disponibilidad': 'Media de Disponibilidad', 'Ciudad': 'Ciudad'})
+    fig_media_disponibilidad.update_layout(
+        plot_bgcolor='#2A3132',
+        paper_bgcolor='#2A3132',
+        font=dict(color='white'),
+        title_font_color='#90AFC5',
+        legend_title_font_color='#90AFC5',
+        legend_font_color='white',
+        height=400
+    )
+    st.plotly_chart(fig_media_disponibilidad, use_container_width=True)
 
-    # Media de productos vendidos y disponibilidad
-    st.markdown("## 📦 Productos y Disponibilidad")
-    col1, col2 = st.columns([1, 1])
-    with col1:
-        df_media_productos = df_productos.groupby('Producto')['Ventas'].mean().reset_index()
-        fig_media_productos = px.bar(df_media_productos, x='Producto', y='Ventas',
-                                     title='Media de Ventas por Producto',
-                                     labels={'Ventas': 'Media de Ventas', 'Producto': 'Producto'})
-        fig_media_productos.update_layout(
-            plot_bgcolor='#2A3132',
-            paper_bgcolor='#2A3132',
-            font=dict(color='white'),
-            title_font_color='#90AFC5',
-            legend_title_font_color='#90AFC5',
-            legend_font_color='white',
-            height=400
-        )
-        st.plotly_chart(fig_media_productos, use_container_width=True)
+# Añadir espacio entre secciones
+st.markdown("<br><br>", unsafe_allow_html=True)
 
-    with col2:
-        df_media_disponibilidad = df_productos.groupby('Ciudad')['Disponibilidad'].mean().reset_index()
-        fig_media_disponibilidad = px.bar(df_media_disponibilidad, x='Ciudad', y='Disponibilidad',
-                                          title='Media de Disponibilidad por Ciudad',
-                                          labels={'Disponibilidad': 'Media de Disponibilidad', 'Ciudad': 'Ciudad'})
-        fig_media_disponibilidad.update_layout(
-            plot_bgcolor='#2A3132',
-            paper_bgcolor='#2A3132',
-            font=dict(color='white'),
-            title_font_color='#90AFC5',
-            legend_title_font_color='#90AFC5',
-            legend_font_color='white',
-            height=400
-        )
-        st.plotly_chart(fig_media_disponibilidad, use_container_width=True)
+# Top 10 productos más y menos vendidos
+st.markdown("## 🏆 Top 10 Productos Más y Menos Vendidos")
+col1, col2 = st.columns([1, 1])
+with col1:
+    df_top10 = df_productos.groupby('Producto')['Ventas'].sum().reset_index().sort_values(by='Ventas', ascending=False)
+    fig_top10 = px.bar(df_top10, x='Producto', y='Ventas',
+                       title='Top 10 Productos Más Vendidos',
+                       labels={'Ventas': 'Total de Ventas', 'Producto': 'Producto'})
+    fig_top10.update_layout(
+        plot_bgcolor='#2A3132',
+        paper_bgcolor='#2A3132',
+        font=dict(color='white'),
+        title_font_color='#90AFC5',
+        legend_title_font_color='#90AFC5',
+        legend_font_color='white',
+        height=400
+    )
+    st.plotly_chart(fig_top10, use_container_width=True)
 
-    # Añadir espacio entre secciones
-    st.markdown("<br><br>", unsafe_allow_html=True)
+with col2:
+    df_least10 = df_productos.groupby('Producto')['Ventas'].sum().reset_index().sort_values(by='Ventas', ascending=True)
+    fig_least10 = px.bar(df_least10, x='Producto', y='Ventas',
+                         title='Top 10 Productos Menos Vendidos',
+                         labels={'Ventas': 'Total de Ventas', 'Producto': 'Producto'})
+    fig_least10.update_layout(
+        plot_bgcolor='#2A3132',
+        paper_bgcolor='#2A3132',
+        font=dict(color='white'),
+        title_font_color='#90AFC5',
+        legend_title_font_color='#90AFC5',
+        legend_font_color='white',
+        height=400
+    )
+    st.plotly_chart(fig_least10, use_container_width=True)
 
-    # Top 10 productos más y menos vendidos
-    st.markdown("## 🏆 Top 10 Productos Más y Menos Vendidos")
-    col1, col2 = st.columns([1, 1])
-    with col1:
-        df_top10 = df_productos.groupby('Producto')['Ventas'].sum().reset_index().sort_values(by='Ventas', ascending=False)
-        fig_top10 = px.bar(df_top10, x='Producto', y='Ventas',
-                           title='Top 10 Productos Más Vendidos',
-                           labels={'Ventas': 'Total de Ventas', 'Producto': 'Producto'})
-        fig_top10.update_layout(
-            plot_bgcolor='#2A3132',
-            paper_bgcolor='#2A3132',
-            font=dict(color='white'),
-            title_font_color='#90AFC5',
-            legend_title_font_color='#90AFC5',
-            legend_font_color='white',
-            height=400
-        )
-        st.plotly_chart(fig_top10, use_container_width=True)
-
-    with col2:
-        df_least10 = df_productos.groupby('Producto')['Ventas'].sum().reset_index().sort_values(by='Ventas', ascending=True)
-        fig_least10 = px.bar(df_least10, x='Producto', y='Ventas',
-                             title='Top 10 Productos Menos Vendidos',
-                             labels={'Ventas': 'Total de Ventas', 'Producto': 'Producto'})
-        fig_least10.update_layout(
-            plot_bgcolor='#2A3132',
-            paper_bgcolor='#2A3132',
-            font=dict(color='white'),
-            title_font_color='#90AFC5',
-            legend_title_font_color='#90AFC5',
-            legend_font_color='white',
-            height=400
-        )
-        st.plotly_chart(fig_least10, use_container_width=True)
-
-    # Pie de página
-    st.markdown("""
-        ---
-        <p style='text-align: center; color: #763626;'>
-            Dashboard de Ventas © 2024
-        </p>
-    """, unsafe_allow_html=True)
+# Pie de página
+st.markdown("""
+    ---
+    <p style='text-align: center; color: #763626;'>
+        Dashboard de Ventas © 2024
+    </p>
+""", unsafe_allow_html=True)
