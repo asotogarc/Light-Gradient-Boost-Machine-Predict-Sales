@@ -58,14 +58,29 @@ st.markdown(
 )
 
 # Generar datos de ejemplo para ventas
-def generate_sales_data():
-    dates = pd.date_range(start='2024-01-01', end='2024-01-31', freq='D')
-    sales = np.random.normal(1000, 200, len(dates))
-    return pd.DataFrame({
-        'Fecha': dates,
-        'Ventas': sales,
-        'Predicción': sales * np.random.uniform(0.8, 1.2, len(dates))
-    })
+def generate_sales_data(cities, start_date, end_date):
+    dates = pd.date_range(start=start_date, end=end_date, freq='D')
+    data = []
+    for city in cities:
+        sales = np.random.normal(1000, 200, len(dates))
+        data.extend(list(zip([city]*len(dates), dates, sales)))
+    df = pd.DataFrame(data, columns=['Ciudad', 'Fecha', 'Ventas'])
+    df['Predicción'] = df['Ventas'] * np.random.uniform(0.8, 1.2, len(df))
+    return df
+
+# Generar datos de productos
+def generate_product_data(cities, start_date, end_date):
+    products = ['Bakery', 'Fruit and vegetable', 'Meat and fish']
+    dates = pd.date_range(start=start_date, end=end_date, freq='D')
+    data = []
+    for city in cities:
+        for date in dates:
+            for product in products:
+                sales = np.random.normal(100, 20)
+                availability = np.random.uniform(0.7, 1.0)
+                data.append([city, date, product, sales, availability])
+    df = pd.DataFrame(data, columns=['Ciudad', 'Fecha', 'Producto', 'Ventas', 'Disponibilidad'])
+    return df
 
 # Generar métricas del modelo
 def generate_model_metrics():
@@ -88,13 +103,20 @@ opcion = st.selectbox(
     ["Datos de Ventas", "Modelo Predictivo"]
 )
 
+# Selección de ciudades y fechas
+cities = ['Budapest_1', 'Prague_2', 'Brno_1', 'Prague_1', 'Prague_3', 'Munich_1', 'Frankfurt_1']
+selected_cities = st.multiselect("Selecciona las ciudades:", cities, default=cities)
+start_date = st.date_input("Fecha de inicio:", datetime(2024, 1, 1))
+end_date = st.date_input("Fecha de fin:", datetime(2024, 1, 31))
+
 if opcion == "Datos de Ventas":
     st.markdown("## 📈 Análisis de Ventas")
     
     # Barra de progreso para simular carga de datos
     with st.status("Generando datos de ventas...", expanded=True) as status:
         st.write("Cargando datos históricos...")
-        df_ventas = generate_sales_data()
+        df_ventas = generate_sales_data(selected_cities, start_date, end_date)
+        df_productos = generate_product_data(selected_cities, start_date, end_date)
         st.write("Procesando predicciones...")
         st.toast("¡Datos generados con éxito!", icon="✅")
         status.update(label="Datos listos", state="complete")
@@ -126,9 +148,9 @@ if opcion == "Datos de Ventas":
         """.format(df_ventas['Ventas'].max()), unsafe_allow_html=True)
     
     # Gráfico de ventas
-    fig_ventas = px.line(df_ventas, x='Fecha', y=['Ventas', 'Predicción'],
-                        title='Ventas vs Predicción',
-                        labels={'value': 'Euros', 'variable': 'Tipo'})
+    fig_ventas = px.line(df_ventas, x='Fecha', y='Ventas', color='Ciudad',
+                        title='Evolución de Ventas por Ciudad',
+                        labels={'value': 'Euros', 'variable': 'Ciudad'})
     fig_ventas.update_layout(
         plot_bgcolor='#2A3132',
         paper_bgcolor='#2A3132',
@@ -138,6 +160,68 @@ if opcion == "Datos de Ventas":
         legend_font_color='white'
     )
     st.plotly_chart(fig_ventas, use_container_width=True)
+    
+    # Media de productos vendidos
+    st.markdown("## 🍞 Media de Productos Vendidos")
+    df_media_productos = df_productos.groupby('Producto')['Ventas'].mean().reset_index()
+    fig_media_productos = px.bar(df_media_productos, x='Producto', y='Ventas',
+                                 title='Media de Ventas por Producto',
+                                 labels={'Ventas': 'Media de Ventas', 'Producto': 'Producto'})
+    fig_media_productos.update_layout(
+        plot_bgcolor='#2A3132',
+        paper_bgcolor='#2A3132',
+        font=dict(color='white'),
+        title_font_color='#90AFC5',
+        legend_title_font_color='#90AFC5',
+        legend_font_color='white'
+    )
+    st.plotly_chart(fig_media_productos, use_container_width=True)
+    
+    # Top 10 productos más y menos vendidos
+    st.markdown("## 📊 Top 10 Productos Más y Menos Vendidos")
+    df_top10 = df_productos.groupby('Producto')['Ventas'].sum().reset_index().sort_values(by='Ventas', ascending=False)
+    fig_top10 = px.bar(df_top10, x='Producto', y='Ventas',
+                       title='Top 10 Productos Más Vendidos',
+                       labels={'Ventas': 'Total de Ventas', 'Producto': 'Producto'})
+    fig_top10.update_layout(
+        plot_bgcolor='#2A3132',
+        paper_bgcolor='#2A3132',
+        font=dict(color='white'),
+        title_font_color='#90AFC5',
+        legend_title_font_color='#90AFC5',
+        legend_font_color='white'
+    )
+    st.plotly_chart(fig_top10, use_container_width=True)
+    
+    df_least10 = df_productos.groupby('Producto')['Ventas'].sum().reset_index().sort_values(by='Ventas', ascending=True)
+    fig_least10 = px.bar(df_least10, x='Producto', y='Ventas',
+                         title='Top 10 Productos Menos Vendidos',
+                         labels={'Ventas': 'Total de Ventas', 'Producto': 'Producto'})
+    fig_least10.update_layout(
+        plot_bgcolor='#2A3132',
+        paper_bgcolor='#2A3132',
+        font=dict(color='white'),
+        title_font_color='#90AFC5',
+        legend_title_font_color='#90AFC5',
+        legend_font_color='white'
+    )
+    st.plotly_chart(fig_least10, use_container_width=True)
+    
+    # Media de disponibilidad
+    st.markdown("## 📦 Media de Disponibilidad")
+    df_media_disponibilidad = df_productos.groupby('Ciudad')['Disponibilidad'].mean().reset_index()
+    fig_media_disponibilidad = px.bar(df_media_disponibilidad, x='Ciudad', y='Disponibilidad',
+                                      title='Media de Disponibilidad por Ciudad',
+                                      labels={'Disponibilidad': 'Media de Disponibilidad', 'Ciudad': 'Ciudad'})
+    fig_media_disponibilidad.update_layout(
+        plot_bgcolor='#2A3132',
+        paper_bgcolor='#2A3132',
+        font=dict(color='white'),
+        title_font_color='#90AFC5',
+        legend_title_font_color='#90AFC5',
+        legend_font_color='white'
+    )
+    st.plotly_chart(fig_media_disponibilidad, use_container_width=True)
 
 else:  # Modelo Predictivo
     st.markdown("## 🤖 Métricas del Modelo")
@@ -184,6 +268,22 @@ else:  # Modelo Predictivo
         - **Periodo de entrenamiento**: 6 meses
         - **Frecuencia de actualización**: Diaria
     """)
+    
+    # Gráfico de valores predichos vs reales
+    st.markdown("## 📈 Valores Predichos vs Reales")
+    df_ventas = generate_sales_data(selected_cities, start_date, end_date)
+    fig_pred_vs_real = px.line(df_ventas, x='Fecha', y=['Ventas', 'Predicción'],
+                               title='Ventas vs Predicción',
+                               labels={'value': 'Euros', 'variable': 'Tipo'})
+    fig_pred_vs_real.update_layout(
+        plot_bgcolor='#2A3132',
+        paper_bgcolor='#2A3132',
+        font=dict(color='white'),
+        title_font_color='#90AFC5',
+        legend_title_font_color='#90AFC5',
+        legend_font_color='white'
+    )
+    st.plotly_chart(fig_pred_vs_real, use_container_width=True)
 
 # Pie de página
 st.markdown("""
