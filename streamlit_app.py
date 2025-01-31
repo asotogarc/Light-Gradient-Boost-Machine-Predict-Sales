@@ -54,7 +54,7 @@ def generate_model_metrics():
 # Título principal
 st.markdown("""
     <h1 style='text-align: center; margin-bottom: 30px;'>
-        📊 Dashboard de Ventas y Predicciones 📈
+        Dashboard de Ventas y Predicciones
     </h1>
 """, unsafe_allow_html=True)
 
